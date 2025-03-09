@@ -1,4 +1,5 @@
 from openai import OpenAI
+import os
 
 numero_de_dias = 7
 numero_de_criancas = 2
@@ -6,7 +7,7 @@ atividade= "praia"
 prompt = f"Crie um roteiro de viagem de {numero_de_dias} dias, para uma familia com {numero_de_criancas} crianças que gostam de {atividade}"
 print(prompt)
 
-cliente = OpenAI(api_key="sua_chave_aqui")
+cliente = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 resposta = cliente.chat.completions.create(
   model="gpt-3.5-turbo",
