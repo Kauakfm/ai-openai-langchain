@@ -1,6 +1,5 @@
 from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
-from langchain.prompts import ChatPromptTemplate
 import os
 
 numero_de_dias = 7
@@ -9,14 +8,6 @@ atividade= "praia"
 
 modelo_do_prompt = PromptTemplate.from_template(
   "Crie um roteiro de viagem de {dias} dias, para uma familia com {criancas} crianças que gostam de {atividade}"
-)
-
-modelo_restaurantes = ChatPromptTemplate.from_template(
-  "Sugira restaurantes populares entre locais em {cidade}"
-)
-
-modelo_cultural  = ChatPromptTemplate.from_template(
-  "Sugira atividades e locais culturais em {cidade}"
 )
 
 prompt = modelo_do_prompt.format(dias=numero_de_dias,
