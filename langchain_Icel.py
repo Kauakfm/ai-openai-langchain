@@ -4,7 +4,7 @@ from langchain_core.pydantic_v1 import Field, BaseModel
 from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
 from langchain.prompts import ChatPromptTemplate
 from langchain.prompts import PromptTemplate
-from langchain.chains import SimpleSequentialChain
+from operator import itemgetter
 import os
 
 set_debug(True)
@@ -38,14 +38,26 @@ modelo_cultural  = ChatPromptTemplate.from_template(
   "Sugira atividades e locais culturais em {cidade}"
 )
 
+modelo_final = ChatPromptTemplate.from_messages(
+  [
+  ("ai",  "Sugestão de viagem para a cidade: {cidade}"),
+  ("ai",  "Restaurantes que você não pode perder: {restaurantes}"),
+  ("ai",  "Atividades e locais culturais recomendados: {locais_culturais}"),
+  ("system",  "Combine as informaçoes anteriores em 2 parágrafos coerentes."),
+  ]
+)
+
 parte1 = modelo_cidade | llm | parseador
 parte2 = modelo_restaurantes | llm | StrOutputParser()
 parte3 = modelo_cultural | llm | StrOutputParser()
+parte4 = modelo_final | llm | StrOutputParser()
 
 cadeia = (parte1 | {
     "restaurantes": parte2, 
-    "locais_culturais": parte3
-})
+    "locais_culturais": parte3,
+    "cidade": itemgetter("cidade")
+} 
+| parte4)
 #print(modelo_cidade.invoke({"interesses" : "praias"}))
 
 resultado = cadeia.invoke({"interesses" : "praias"})
